@@ -1,0 +1,51 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- task: AzureCLI@2
+  displayName: 'Install AWS CLI'
+  inputs:
+    azureSubscription: 'Your Azure subscription'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'pip install awscli'
+
+- task: Bash@3
+  displayName: 'Connect to AWS EC2 and Install Jupyter Notebook and Nginx'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Connect to AWS EC2 instance via SSH
+      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo yum update -y && sudo yum install -y python3-pip python3-devel gcc nginx'
+      
+      # Install Jupyter Notebook using pip
+      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo pip3 install jupyter'
+
+      # Configure Nginx to proxy requests to Jupyter Notebook
+      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo tee /etc/nginx/conf.d/jupyter.conf > /dev/null <<EOF
+      server {
+          listen 80;
+          server_name your_domain_or_ip;
+
+          location / {
+              proxy_pass http://localhost:8888;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_cache_bypass $http_upgrade;
+          }
+      }
+      EOF
+
+      # Restart Nginx to apply changes
+      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo systemctl restart nginx'
