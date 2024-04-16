@@ -12,12 +12,7 @@ steps:
     versionSpec: '3.x'
     addToPath: true
 
-- task: AzureCLI@2
-  displayName: 'Install AWS CLI'
-  inputs:
-    azureSubscription: 'Your Azure subscription'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'pip install awscli'
+
 
 - task: Bash@3
   displayName: 'Connect to AWS EC2 and Install Jupyter Notebook and Nginx'
@@ -31,7 +26,7 @@ steps:
       ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo pip3 install jupyter'
 
       # Configure Nginx to proxy requests to Jupyter Notebook
-     ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
+       ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
       server {
           listen 80;
           3.108.185.193;
@@ -48,7 +43,7 @@ steps:
       EOF
 
       # Create a symbolic link to enable the site configuration
-     ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
+       ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
 
       # Remove the default Nginx site configuration
       ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo rm /etc/nginx/sites-enabled/default'
