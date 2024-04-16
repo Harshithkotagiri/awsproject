@@ -25,16 +25,16 @@ steps:
     targetType: 'inline'
     script: |
       # Connect to AWS EC2 instance via SSH
-      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo yum update -y && sudo yum install -y python3-pip python3-devel gcc nginx'
-      
+      ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+
       # Install Jupyter Notebook using pip
-      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo pip3 install jupyter'
+      ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo pip3 install jupyter'
 
       # Configure Nginx to proxy requests to Jupyter Notebook
-      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo tee /etc/nginx/conf.d/jupyter.conf > /dev/null <<EOF
+     ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
       server {
           listen 80;
-          server_name your_domain_or_ip;
+          3.108.185.193;
 
           location / {
               proxy_pass http://localhost:8888;
@@ -47,5 +47,11 @@ steps:
       }
       EOF
 
-      # Restart Nginx to apply changes
-      ssh -i /path/to/your/key.pem ec2-user@your-ec2-instance-ip 'sudo systemctl restart nginx'
+      # Create a symbolic link to enable the site configuration
+     ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
+
+      # Remove the default Nginx site configuration
+      ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo rm /etc/nginx/sites-enabled/default'
+
+      # Test Nginx configuration and restart Nginx
+      ssh -i  C:\Users\91830\Downloads\ubuntuexample3.pem ubuntu@3.108.185.193 'sudo nginx -t && sudo systemctl restart nginx'
