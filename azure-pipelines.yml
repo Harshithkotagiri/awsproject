@@ -22,17 +22,20 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      # Set permissions on the downloaded SSH private key file
+      chmod 600 $(Agent.TempDirectory)/ubuntuexample3.pem
+
       # Connect to AWS EC2 instance via SSH
-      ssh -i  ubuntuexample3.pem ubuntu@3.108.185.193 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
       # Install Jupyter Notebook using pip
-      ssh -i  $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo pip3 install jupyter'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo pip3 install jupyter'
 
       # Configure Nginx to proxy requests to Jupyter Notebook
-       ssh -i  $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
       server {
           listen 80;
-          3.108.185.193;
+          server_name _;
 
           location / {
               proxy_pass http://localhost:8888;
@@ -43,14 +46,13 @@ steps:
               proxy_cache_bypass $http_upgrade;
           }
       }
-      EOF
+      EOF'
 
       # Create a symbolic link to enable the site configuration
-       ssh -i  $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
 
       # Remove the default Nginx site configuration
-      ssh -i  $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo rm /etc/nginx/sites-enabled/default'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo rm /etc/nginx/sites-enabled/default'
 
       # Test Nginx configuration and restart Nginx
-      ssh -i  $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo nginx -t && sudo systemctl restart nginx'
-
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo nginx -t && sudo systemctl restart nginx'
