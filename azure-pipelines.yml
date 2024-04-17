@@ -28,9 +28,6 @@ steps:
       # Connect to AWS EC2 instance via SSH, ignoring host key verification
       ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
-      # Connect to AWS EC2 instance via SSH
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
-
       # Install Jupyter Notebook using pip
       ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo pip3 install jupyter'
 
@@ -44,9 +41,8 @@ steps:
               proxy_pass http://localhost:8888;
               proxy_http_version 1.1;
               proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection 'upgrade';
+              proxy_set_header Connection $connection_upgrade;
               proxy_set_header Host $host;
-              proxy_cache_bypass $http_upgrade;
           }
       }
       EOF'
