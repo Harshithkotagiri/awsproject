@@ -25,6 +25,9 @@ steps:
       # Set permissions on the downloaded SSH private key file
       chmod 600 $(Agent.TempDirectory)/ubuntuexample3.pem
 
+      # Connect to AWS EC2 instance via SSH, ignoring host key verification
+      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+
       # Connect to AWS EC2 instance via SSH
       ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
