@@ -26,13 +26,13 @@ steps:
       chmod 600 $(Agent.TempDirectory)/ubuntuexample3.pem
 
       # Connect to AWS EC2 instance via SSH
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
       # Install Jupyter Notebook using pip
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo pip3 install jupyter'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo pip3 install jupyter'
 
       # Configure Nginx to proxy requests to Jupyter Notebook
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
       server {
           listen 80;
           server_name _;
@@ -49,10 +49,10 @@ steps:
       EOF'
 
       # Create a symbolic link to enable the site configuration
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
 
       # Remove the default Nginx site configuration
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo rm /etc/nginx/sites-enabled/default'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo rm /etc/nginx/sites-enabled/default'
 
       # Test Nginx configuration and restart Nginx
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.108.185.193 'sudo nginx -t && sudo systemctl restart nginx'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo nginx -t && sudo systemctl restart nginx'
