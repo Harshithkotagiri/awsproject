@@ -34,12 +34,6 @@ steps:
       echo "Installing Jupyter Notebook..."
       ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo pip3 install jupyter'
 
-      # Configure Nginx to proxy requests to Jupyter Notebook
-      echo "Configuring Nginx..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null 
-      
-      
-
       # Create a symbolic link to enable the site configuration
       echo "Creating symbolic link for Nginx configuration..."
       ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
