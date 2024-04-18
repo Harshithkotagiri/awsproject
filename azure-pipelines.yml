@@ -18,7 +18,7 @@ steps:
     secureFile: 'ubuntuexample3.pem'
 
 - task: Bash@3
-  displayName: 'Connect to AWS EC2 and Install Jupyter Notebook'
+  displayName: 'Connect to AWS EC2 and Install Jupyter Notebook  and Nginx'
   inputs:
     targetType: 'inline'
     script: |
@@ -28,7 +28,7 @@ steps:
 
       # Connect to AWS EC2 instance via SSH, ignoring host key verification
       echo "Connecting to AWS EC2 instance via SSH..."
-      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo apt update && sudo apt install -y python3-pip python3-dev'
+      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
       # Install Jupyter Notebook using pip
       echo "Installing Jupyter Notebook..."
