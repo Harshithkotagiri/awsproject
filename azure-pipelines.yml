@@ -36,7 +36,7 @@ steps:
 
       # Configure Nginx to proxy requests to Jupyter Notebook
       echo "Configuring Nginx..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null 
       
       
 
