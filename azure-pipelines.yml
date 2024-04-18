@@ -28,37 +28,26 @@ steps:
 
       # Connect to AWS EC2 instance via SSH, ignoring host key verification
       echo "Connecting to AWS EC2 instance via SSH..."
-      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
 
       # Install Jupyter Notebook using pip
       echo "Installing Jupyter Notebook..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo pip3 install jupyter'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo pip3 install jupyter'
 
       # Configure Nginx to proxy requests to Jupyter Notebook
       echo "Configuring Nginx..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
-      server {
-          listen 80;
-          server_name _;
-
-          location / {
-              proxy_pass http://localhost:8888;
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection $connection_upgrade;
-              proxy_set_header Host $host;
-          }
-      }
-      EOF'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo tee /etc/nginx/sites-available/jupyter.conf > /dev/null <<EOF
+      
+      
 
       # Create a symbolic link to enable the site configuration
       echo "Creating symbolic link for Nginx configuration..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
 
       # Remove the default Nginx site configuration
       echo "Removing default Nginx site configuration..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo rm /etc/nginx/sites-enabled/default'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo rm /etc/nginx/sites-enabled/default'
 
       # Test Nginx configuration and restart Nginx
       echo "Testing Nginx configuration and restarting Nginx..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@13.201.55.126 'sudo nginx -t && sudo systemctl restart nginx'
+      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo nginx -t && sudo systemctl restart nginx'
