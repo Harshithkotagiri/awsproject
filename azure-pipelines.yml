@@ -18,7 +18,7 @@ steps:
     secureFile: 'ubuntuexample3.pem'
 
 - task: Bash@3
-  displayName: 'Connect to AWS EC2 and Install Jupyter Notebook and Nginx'
+  displayName: 'Connect to AWS EC2 and Install Jupyter Notebook'
   inputs:
     targetType: 'inline'
     script: |
@@ -28,20 +28,8 @@ steps:
 
       # Connect to AWS EC2 instance via SSH, ignoring host key verification
       echo "Connecting to AWS EC2 instance via SSH..."
-      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo apt update && sudo apt install -y python3-pip python3-dev nginx'
+      ssh -o StrictHostKeyChecking=no -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo apt update && sudo apt install -y python3-pip python3-dev'
 
       # Install Jupyter Notebook using pip
       echo "Installing Jupyter Notebook..."
       ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo pip3 install jupyter'
-
-      # Create a symbolic link to enable the site configuration
-      echo "Creating symbolic link for Nginx configuration..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo ln -s /etc/nginx/sites-available/jupyter.conf /etc/nginx/sites-enabled/'
-
-      # Remove the default Nginx site configuration
-      echo "Removing default Nginx site configuration..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo rm /etc/nginx/sites-enabled/default'
-
-      # Test Nginx configuration and restart Nginx
-      echo "Testing Nginx configuration and restarting Nginx..."
-      ssh -i $(Agent.TempDirectory)/ubuntuexample3.pem ubuntu@3.6.94.199 'sudo nginx -t && sudo systemctl restart nginx'
